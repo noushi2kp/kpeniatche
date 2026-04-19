@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ETS KPENIATCHE">
+<title>ETS KPENIATCHE</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f7f4ef; --bg2:#eee9e0; --surface:#fff;
+  --border:#d9d2c5; --border2:#c5bdb0;
+  --ink:#1a1612; --ink2:#4a4540; --muted:#9a9188;
+  --gold:#b8860b; --gold-bg:#fdf8ec;
+  --green:#2d6a4f; --green-light:#d8f3dc;
+  --red:#9b2335; --red-light:#fde8ec;
+  --blue:#1a3a5c; --blue-light:#dce8f5;
+  --purple:#6b3fa0; --purple-light:#ede4f8;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding-bottom:80px;}
+
+/* HEADER */
+header{background:var(--ink);color:#fff;text-align:center;padding:26px 16px 20px;position:relative;}
+header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),#f0d060,var(--gold));}
+.h-eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:7px;}
+header h1{font-family:'Playfair Display',serif;font-size:clamp(24px,7vw,34px);font-weight:900;letter-spacing:1px;}
+.h-sub{font-family:'DM Mono',monospace;font-size:9px;color:#777;margin-top:5px;letter-spacing:2px;}
+
+/* TABS */
+.tabs{display:flex;background:var(--ink);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:200;}
+.tab{flex:1;padding:11px 4px;background:transparent;border:none;color:#777;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:color .2s;border-bottom:2px solid transparent;margin-bottom:-2px;}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+/* CONTAINER */
+.wrap{max-width:540px;margin:0 auto;padding:14px 11px;}
+.tab-pane{display:none;} .tab-pane.on{display:block;}
+
+/* BANNERS */
+.date-row{background:var(--gold-bg);border:1px solid var(--gold);border-radius:12px;padding:11px 14px;margin-bottom:13px;display:flex;align-items:center;gap:10px;}
+.date-lbl{font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:var(--gold);white-space:nowrap;}
+.date-row input[type=date]{background:transparent;border:none;color:var(--ink);font-family:'DM Mono',monospace;font-size:14px;font-weight:600;outline:none;flex:1;}
+.day-lbl{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+
+.alert{border-radius:10px;padding:9px 13px;font-family:'DM Mono',monospace;font-size:11px;margin-bottom:11px;display:none;}
+.alert-red{background:var(--red-light);border:1px solid var(--red);color:var(--red);}
+.alert-gold{background:#fff8e1;border:1px solid var(--gold);color:#7a5c00;}
+.unlock-lnk{text-decoration:underline;cursor:pointer;margin-left:5px;}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:13px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.04);}
+.card-head{display:flex;align-items:center;gap:8px;padding:10px 13px;background:var(--bg);border-bottom:1px solid var(--border);}
+.card-title{font-size:13px;font-weight:700;flex:1;}
+.card-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+.bdg{width:23px;height:23px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;flex-shrink:0;}
+.b1{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold);}
+.b2{background:var(--green-light);color:var(--green);border:1px solid var(--green);}
+.b3{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue);}
+
+/* DATA ROWS */
+.rows{padding:7px 11px;display:flex;flex-direction:column;gap:5px;}
+.dr{display:grid;grid-template-columns:1fr auto auto;gap:5px;align-items:center;padding:7px 8px;border-radius:8px;background:var(--bg);border:1px solid var(--border);transition:border-color .2s;}
+.dr:focus-within{border-color:var(--gold);}
+.dr label{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dr input[type=number]{background:transparent;border:none;color:var(--ink);font-family:'DM Mono',monospace;font-size:13px;font-weight:600;outline:none;text-align:right;width:105px;}
+.dr input[type=number]::placeholder{color:#ccc;}
+.dot{width:6px;height:6px;border-radius:50%;background:#e0dbd3;flex-shrink:0;transition:background .2s;}
+.dot.ok{background:var(--green);}
+.xbtn{background:transparent;border:none;color:#ccc;cursor:pointer;font-size:11px;padding:2px 4px;border-radius:4px;transition:color .2s;line-height:1;}
+.xbtn:hover{color:var(--red);}
+
+/* LOCKED */
+body.locked .dr input,body.locked #budget-inp,body.locked #bons-inp,
+body.locked #gerant-inp,body.locked #date-inp{pointer-events:none;opacity:.65;}
+body.locked .add-btn,body.locked .xbtn{display:none;}
+
+/* ADD BTN */
+.add-btn{margin:4px 11px 9px;background:transparent;border:1px dashed var(--border2);border-radius:8px;color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;padding:7px;width:calc(100% - 22px);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.add-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-bg);}
+
+/* SPECIAL ROWS */
+.srow{padding:10px 13px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.srow label{font-size:12px;font-weight:700;}
+.srow.gold label{color:var(--gold);}
+.srow.purple label{color:var(--purple);}
+.srow input{background:var(--bg);border-radius:8px;color:var(--ink);font-family:'DM Mono',monospace;font-size:13px;font-weight:700;padding:7px 9px;outline:none;text-align:right;width:135px;border:1px solid var(--border2);transition:border-color .2s;}
+.srow.gold input{border-color:var(--gold);color:var(--gold);}
+.srow.purple input{border-color:var(--purple);color:var(--purple);}
+
+/* GÉRANT */
+.gerant-card{padding:13px;}
+.gerant-card label{display:block;font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--ink2);margin-bottom:7px;}
+.gerant-card input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;color:var(--ink);font-family:'Outfit',sans-serif;font-size:14px;padding:10px 12px;outline:none;transition:border-color .2s;}
+.gerant-card input:focus{border-color:var(--gold);}
+
+/* RESULT */
+.result-title{padding:10px 13px;background:var(--bg);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.calc-lines{padding:11px 13px;display:flex;flex-direction:column;gap:6px;}
+.calc-line{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);padding-bottom:6px;border-bottom:1px dashed var(--border);}
+.calc-line span:last-child{color:var(--ink);font-weight:600;}
+.result-main{margin:0 13px 13px;padding:13px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;border:2px solid var(--border);background:var(--bg);transition:all .3s;}
+.result-main.comm{background:var(--green-light);border-color:var(--green);}
+.result-main.deft{background:var(--red-light);border-color:var(--red);}
+.r-label{font-size:13px;font-weight:700;color:var(--muted);}
+.result-main.comm .r-label{color:var(--green);}
+.result-main.deft .r-label{color:var(--red);}
+.r-note{font-family:'DM Mono',monospace;font-size:10px;margin-top:3px;opacity:.75;}
+.r-amt{font-family:'DM Mono',monospace;font-size:20px;font-weight:700;color:var(--muted);}
+.result-main.comm .r-amt{color:var(--green);}
+.result-main.deft .r-amt{color:var(--red);}
+
+/* BUTTONS */
+.btn-grp{display:grid;grid-template-columns:1fr auto auto;gap:8px;margin-bottom:14px;}
+.btn-save{background:var(--ink);color:#fff;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;padding:13px;cursor:pointer;transition:background .2s;}
+.btn-save:active{transform:scale(.98);}
+.btn-sec{border-radius:10px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;padding:13px 12px;cursor:pointer;transition:all .2s;border:1px solid;}
+.btn-gold{background:var(--gold-bg);color:var(--gold);border-color:var(--gold);}
+.btn-blue{background:var(--blue-light);color:var(--blue);border-color:var(--blue);}
+
+/* HISTORIQUE */
+.hist-item{padding:11px 13px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center;cursor:pointer;transition:background .15s;}
+.hist-item:last-child{border-bottom:none;}
+.hist-item:active{background:var(--bg);}
+.hist-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);line-height:1.5;}
+.hist-gerant{font-size:11px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hist-amt{font-family:'DM Mono',monospace;font-size:12px;font-weight:700;}
+.hist-amt.comm{color:var(--green);}
+.hist-amt.deft{color:var(--red);}
+.hist-acts{display:flex;gap:4px;}
+.hbtn{background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--muted);cursor:pointer;font-size:11px;padding:3px 6px;transition:all .2s;}
+.hbtn:active{border-color:var(--gold);color:var(--gold);}
+.hbtn.del:active{border-color:var(--red);color:var(--red);}
+.empty-msg{padding:24px;text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;}
+
+/* ANALYSE */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:13px;}
+.stat-box{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;}
+.stat-val{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;}
+.stat-lbl{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:4px;}
+.stat-box.green .stat-val{color:var(--green);}
+.stat-box.red .stat-val{color:var(--red);}
+.stat-box.gold .stat-val{color:var(--gold);}
+
+/* DETAIL CONTENT */
+.det-sec-title{font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:8px 0 4px;border-bottom:1px solid var(--border);margin-bottom:5px;}
+.det-row{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:11px;padding:3px 0;color:var(--ink2);}
+.det-row span:last-child{font-weight:600;color:var(--ink);}
+.det-result{margin-top:10px;padding:12px;border-radius:8px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:14px;}
+.det-result.comm{background:var(--green-light);color:var(--green);}
+.det-result.deft{background:var(--red-light);color:var(--red);}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.overlay.on{opacity:1;pointer-events:all;}
+.mbox{background:var(--surface);border-radius:16px;padding:22px;width:100%;max-width:340px;border:1px solid var(--border);transform:translateY(20px);transition:transform .2s;}
+.overlay.on .mbox{transform:translateY(0);}
+.mbox.wide{max-width:480px;}
+.m-icon{font-size:30px;text-align:center;margin-bottom:7px;}
+.m-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:5px;text-align:center;}
+.m-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:14px;text-align:center;}
+.m-input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;color:var(--ink);font-family:'DM Mono',monospace;font-size:16px;padding:11px 13px;outline:none;margin-bottom:9px;letter-spacing:3px;transition:border-color .2s;}
+.m-input:focus{border-color:var(--gold);}
+.m-err{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);margin-bottom:8px;display:none;}
+.m-btns{display:flex;gap:8px;}
+.m-ok{flex:1;background:var(--ink);color:#fff;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;padding:11px;cursor:pointer;}
+.m-cancel{flex:1;background:var(--bg2);color:var(--ink2);border:1px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;padding:11px;cursor:pointer;}
+.m-detail-body{max-height:55vh;overflow-y:auto;margin:10px 0;}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-family:'DM Mono',monospace;font-size:11px;z-index:2000;transition:transform .3s;white-space:nowrap;border-top:2px solid var(--gold);pointer-events:none;}
+.toast.on{transform:translateX(-50%) translateY(0);}
+
+/* FOOTER */
+footer{text-align:center;padding:18px;border-top:1px solid var(--border);margin-top:16px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
+footer strong{color:var(--ink);}
+
+canvas{display:block;width:100%;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-eyebrow">◆ Établissement Commercial ◆</div>
+  <h1>ETS KPENIATCHE</h1>
+  <div class="h-sub">Fiche Journalière de Suivi Budget</div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" onclick="goTab('saisie',this)">📝 Saisie</button>
+  <button class="tab" onclick="goTab('historique',this)">📅 Historique</button>
+  <button class="tab" onclick="goTab('analyse',this)">📊 Analyse</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ========== SAISIE ========== -->
+<div id="tab-saisie" class="tab-pane on">
+
+  <div class="date-row">
+    <span class="date-lbl">📅 DATE</span>
+    <input type="date" id="date-inp" oninput="onDate()">
+    <span class="day-lbl" id="day-lbl"></span>
+  </div>
+
+  <div class="alert alert-red" id="al-future">⛔ Date future — enregistrement impossible</div>
+  <div class="alert alert-gold" id="al-locked">
+    🔒 Journée enregistrée et verrouillée.
+    <span class="unlock-lnk" onclick="askPwd('unlock')">Modifier (mot de passe requis)</span>
+  </div>
+
+  <!-- P1 -->
+  <div class="card">
+    <div class="card-head">
+      <span class="bdg b1">P1</span>
+      <span class="card-title">Trésorerie disponible</span>
+      <span class="card-sub" id="sub1">0 FCFA</span>
+    </div>
+    <div class="rows" id="rp1">
+      <div class="dr"><label>Caisse</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Supérieur (prêt)</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Mixx PDV</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>MCash</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Flooz PDV</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>MoMo Moov</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>MTN MoMo</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Yas (unités)</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Moov (unités)</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+    </div>
+    <button class="add-btn" onclick="addRow('rp1')">＋ Ajouter un poste</button>
+    <div class="srow gold"><label>💼 Budget du jour</label><input type="number" id="budget-inp" min="0" placeholder="0" oninput="calc()"></div>
+    <div class="srow purple"><label>🎟️ Bons vendus</label><input type="number" id="bons-inp" min="0" placeholder="0" oninput="calc()"></div>
+  </div>
+
+  <!-- P2 -->
+  <div class="card">
+    <div class="card-head">
+      <span class="bdg b2">P2</span>
+      <span class="card-title">Créances clients</span>
+      <span class="card-sub" id="sub2">0 FCFA</span>
+    </div>
+    <div class="rows" id="rp2">
+      <div class="dr"><label>Sunday</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Ade</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Essowe</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Nazif</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Aladji</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Espagne</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Danlah</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Chef Abdoul</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Faïza</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Ebuka</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Djibril</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Faiza (2)</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Izunna</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Adnane</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Yaro</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+    </div>
+    <button class="add-btn" onclick="addRow('rp2')">＋ Ajouter un client</button>
+  </div>
+
+  <!-- P3 -->
+  <div class="card">
+    <div class="card-head">
+      <span class="bdg b3">P3</span>
+      <span class="card-title">Fonds partenaires</span>
+      <span class="card-sub" id="sub3">0 FCFA</span>
+    </div>
+    <div class="rows" id="rp3">
+      <div class="dr"><label>Noushi</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Bilali</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Ibo</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Nsh™</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Rida</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Qoti</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+      <div class="dr"><label>Mosqé</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button></div>
+    </div>
+    <button class="add-btn" onclick="addRow('rp3')">＋ Ajouter un partenaire</button>
+  </div>
+
+  <!-- GÉRANT -->
+  <div class="card gerant-card">
+    <label>✍️ Nom du gérant / responsable</label>
+    <input type="text" id="gerant-inp" placeholder="Votre nom complet...">
+  </div>
+
+  <!-- RÉSULTAT -->
+  <div class="card">
+    <div class="result-title">CALCUL DE LA JOURNÉE</div>
+    <div class="calc-lines">
+      <div class="calc-line"><span>Partie 1 + Partie 2</span><span id="r-ab">0 FCFA</span></div>
+      <div class="calc-line"><span>Bons + Partie 3 + Budget</span><span id="r-cd">0 FCFA</span></div>
+    </div>
+    <div class="result-main" id="r-main">
+      <div>
+        <div class="r-label" id="r-label">En attente...</div>
+        <div class="r-note" id="r-note">Remplissez les champs</div>
+      </div>
+      <div class="r-amt" id="r-amt">—</div>
+    </div>
+  </div>
+
+  <div class="btn-grp" id="grp-save">
+    <button class="btn-save" onclick="saveDay()">✅ Enregistrer</button>
+    <button class="btn-sec btn-gold" onclick="doExport()">📄 PDF</button>
+    <button class="btn-sec btn-blue" onclick="doBackup()">💾 Backup</button>
+  </div>
+  <div class="btn-grp" id="grp-new" style="display:none">
+    <button class="btn-save" onclick="newDay()">📝 Nouvelle journée</button>
+    <button class="btn-sec btn-gold" onclick="doExport()">📄 PDF</button>
+    <button class="btn-sec btn-blue" onclick="doBackup()">💾 Backup</button>
+  </div>
+
+  <!-- Restaurer backup -->
+  <div style="text-align:center;margin-bottom:14px;">
+    <label style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);cursor:pointer;text-decoration:underline;">
+      📂 Restaurer un backup
+      <input type="file" id="restore-file" accept=".json" style="display:none" onchange="doRestore(this)">
+    </label>
+  </div>
+
+</div><!-- /saisie -->
+
+<!-- ========== HISTORIQUE ========== -->
+<div id="tab-historique" class="tab-pane">
+  <div class="card">
+    <div class="card-head">
+      <span class="card-title">📅 Toutes les journées</span>
+      <span class="card-sub" id="hist-count">0 entrée(s)</span>
+    </div>
+    <div id="hist-list"><div class="empty-msg">Aucune journée enregistrée.</div></div>
+  </div>
+</div>
+
+<!-- ========== ANALYSE ========== -->
+<div id="tab-analyse" class="tab-pane">
+  <div class="card">
+    <div class="card-head"><span class="card-title">📈 Résumé global</span></div>
+    <div id="analyse-body"><div class="empty-msg">Aucune donnée disponible.</div></div>
+  </div>
+  <div class="card" id="chart-card" style="display:none">
+    <div class="card-head"><span class="card-title">📊 Commissions par jour</span></div>
+    <canvas id="chart" height="180" style="padding:10px"></canvas>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div>ETS KPENIATCHE — Suivi Journalier</div>
+  <div style="margin-top:4px">Le Gérant : <strong id="footer-g">—</strong></div>
+</footer>
+
+<!-- MODAL MOT DE PASSE -->
+<div class="overlay" id="mo-pwd">
+  <div class="mbox">
+    <div class="m-icon">🔒</div>
+    <div class="m-title">Accès protégé</div>
+    <div class="m-sub">Mot de passe requis pour cette action.</div>
+    <input type="password" id="pwd-inp" class="m-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')confirmPwd()">
+    <div class="m-err" id="pwd-err">❌ Mot de passe incorrect</div>
+    <div class="m-btns">
+      <button class="m-cancel" onclick="closeOverlay('mo-pwd')">Annuler</button>
+      <button class="m-ok" onclick="confirmPwd()">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DÉTAIL -->
+<div class="overlay" id="mo-detail">
+  <div class="mbox wide">
+    <div class="m-title" id="det-title">Détail</div>
+    <div class="m-detail-body" id="det-body"></div>
+    <button class="m-ok" style="width:100%;margin-top:8px" onclick="closeOverlay('mo-detail')">Fermer</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+const PWD = '503469/2Kp';
+const KEY = 'kpen_data_v1';
+const DAYS = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+const DP1 = ['Caisse','Supérieur (prêt)','Mixx PDV','MCash','Flooz PDV','MoMo Moov','MTN MoMo','Yas (unités)','Moov (unités)'];
+const DP2 = ['Sunday','Ade','Essowe','Nazif','Aladji','Espagne','Danlah','Chef Abdoul','Faïza','Ebuka','Djibril','Faiza (2)','Izunna','Adnane','Yaro'];
+const DP3 = ['Noushi','Bilali','Ibo','Nsh™','Rida','Qoti','Mosqé'];
+
+let pwdAction = null;
+
+// ---- UTILS ----
+const pad = n => String(n).padStart(2,'0');
+const todayStr = () => { const d=new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+const fmtDate = s => { if(!s)return''; const[y,m,d]=s.split('-'); return`${d}/${m}/${y}`; };
+const dayName = s => { if(!s)return''; return DAYS[new Date(s+'T00:00:00').getDay()]; };
+const isFuture = s => { if(!s)return false; const sel=new Date(s+'T00:00:00'),tod=new Date(); tod.setHours(0,0,0,0); return sel>tod; };
+const fmt = n => Math.abs(n).toLocaleString('fr-FR')+' FCFA';
+const $ = id => document.getElementById(id);
+const show = (id,v=true) => $(id).style.display = v ? 'block' : 'none';
+
+// ---- STORAGE ----
+const load = () => { try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return[]; } };
+const save = recs => localStorage.setItem(KEY, JSON.stringify(recs));
+
+// ---- INIT ----
+window.onload = () => {
+  $('date-inp').value = todayStr();
+  onDate(); calc(); renderHist(); renderAnalyse();
+  // update dots on existing inputs
+  document.querySelectorAll('.dr input').forEach(i => i.addEventListener('input', updateDot));
+};
+
+function updateDot() {
+  const dot = this.closest('.dr')?.querySelector('.dot');
+  if(dot) dot.classList.toggle('ok', this.value !== '' && this.value !== '0');
+}
+
+// ---- TABS ----
+function goTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  $('tab-'+name).classList.add('on');
+  btn.classList.add('active');
+  if(name==='historique') renderHist();
+  if(name==='analyse') renderAnalyse();
+}
+
+// ---- DATE ----
+function onDate() {
+  const v = $('date-inp').value;
+  $('day-lbl').textContent = dayName(v);
+  $('al-future').style.display = isFuture(v) ? 'block' : 'none';
+}
+
+// ---- ROWS ----
+function mkRow(label) {
+  const d = document.createElement('div');
+  d.className = 'dr';
+  d.innerHTML = `<label>${label}</label><input type="number" min="0" placeholder="0" oninput="calc()"><span class="dot"></span><button class="xbtn" onclick="delRow(this)">✕</button>`;
+  d.querySelector('input').addEventListener('input', updateDot);
+  return d;
+}
+
+function addRow(cid) {
+  const name = prompt('Nom du poste / client / partenaire :');
+  if(!name||!name.trim()) return;
+  $(cid).appendChild(mkRow(name.trim()));
+  calc();
+}
+
+function delRow(btn) {
+  if(!confirm('Supprimer cette ligne ?')) return;
+  btn.closest('.dr').remove(); calc();
+}
+
+function buildSection(cid, labels) {
+  const c = $(cid); c.innerHTML = '';
+  labels.forEach(l => c.appendChild(mkRow(l)));
+}
+
+// ---- CALC ----
+function sumSec(id) {
+  return [...document.querySelectorAll(`#${id} input[type=number]`)].reduce((s,i)=>s+(parseFloat(i.value)||0),0);
+}
+
+function calc() {
+  const p1=sumSec('rp1'), p2=sumSec('rp2'), p3=sumSec('rp3');
+  const bgt=parseFloat($('budget-inp').value)||0;
+  const bns=parseFloat($('bons-inp').value)||0;
+
+  $('sub1').textContent=fmt(p1);
+  $('sub2').textContent=fmt(p2);
+  $('sub3').textContent=fmt(p3);
+
+  const ab=p1+p2, cd=bns+p3+bgt, res=ab-cd;
+  $('r-ab').textContent=fmt(ab);
+  $('r-cd').textContent=fmt(cd);
+
+  const card=$('r-main'), lbl=$('r-label'), note=$('r-note'), amt=$('r-amt');
+  card.className='result-main';
+  if(ab===0&&cd===0){ lbl.textContent='En attente...'; note.textContent='Remplissez les champs'; amt.textContent='—'; }
+  else if(res>0){ card.classList.add('comm'); lbl.textContent='✅ Commission du jour'; note.textContent='Surplus constaté — bonne journée !'; amt.textContent='+'+fmt(res); }
+  else if(res<0){ card.classList.add('deft'); lbl.textContent='🔴 Déficit'; note.textContent='Trou à combler — vérifiez les données'; amt.textContent='-'+fmt(res); }
+  else{ lbl.textContent='⚖️ Équilibre'; note.textContent='Ni surplus ni déficit'; amt.textContent='0 FCFA'; }
+
+  $('footer-g').textContent=$('gerant-inp').value||'—';
+}
+
+// ---- VALIDATE ----
+function validate() {
+  const all=[...document.querySelectorAll('.dr input[type=number]'),$('budget-inp'),$('bons-inp')];
+  const empty=all.filter(i=>i.value==='');
+  if(empty.length){ const lbs=[...document.querySelectorAll('.dr')].filter(r=>{const i=r.querySelector('input');return i&&i.value==='';}).slice(0,2).map(r=>r.querySelector('label')?.textContent||'?'); return `${empty.length} champ(s) vide(s) : ${lbs.join(', ')}`; }
+  if(!$('gerant-inp').value.trim()) return 'Nom du gérant manquant';
+  return null;
+}
+
+// ---- COLLECT ----
+function collectSec(id) {
+  return [...document.querySelectorAll(`#${id} .dr`)].map(r=>({ label:r.querySelector('label').textContent, val:parseFloat(r.querySelector('input').value)||0 }));
+}
+
+function collectAll(date) {
+  const p1r=collectSec('rp1'),p2r=collectSec('rp2'),p3r=collectSec('rp3');
+  const bgt=parseFloat($('budget-inp').value)||0,bns=parseFloat($('bons-inp').value)||0;
+  const gerant=$('gerant-inp').value.trim();
+  const p1=p1r.reduce((s,r)=>s+r.val,0),p2=p2r.reduce((s,r)=>s+r.val,0),p3=p3r.reduce((s,r)=>s+r.val,0);
+  const ab=p1+p2,cd=bns+p3+bgt,result=ab-cd;
+  return{date,gerant,p1r,p2r,p3r,bgt,bns,p1,p2,p3,ab,cd,result};
+}
+
+// ---- SAVE ----
+function saveDay() {
+  const date=$('date-inp').value;
+  if(!date){toast('⚠️ Sélectionnez une date !');return;}
+  if(isFuture(date)){toast('⛔ Date future — impossible !');return;}
+  const err=validate(); if(err){toast('⚠️ '+err);return;}
+  const recs=load();
+  if(recs.find(r=>r.date===date)){toast('⚠️ Cette journée existe déjà. Utilisez Modifier.');return;}
+  recs.unshift(collectAll(date));
+  save(recs);
+  lock();
+  toast('✅ Journée enregistrée et verrouillée !');
+  renderHist(); renderAnalyse();
+}
+
+// ---- LOCK/UNLOCK ----
+function lock() {
+  document.body.classList.add('locked');
+  $('al-locked').style.display='block';
+  $('grp-save').style.display='none';
+  $('grp-new').style.display='grid';
+}
+
+function unlock() {
+  document.body.classList.remove('locked');
+  $('al-locked').style.display='none';
+  $('grp-save').style.display='grid';
+  $('grp-new').style.display='none';
+  toast('🔓 Page déverrouillée !');
+}
+
+// ---- NEW DAY ----
+function newDay() {
+  unlock();
+  buildSection('rp1',DP1); buildSection('rp2',DP2); buildSection('rp3',DP3);
+  $('budget-inp').value=''; $('bons-inp').value=''; $('gerant-inp').value='';
+  $('date-inp').value=todayStr(); onDate(); calc();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ---- HISTORY ----
+function renderHist() {
+  const recs=load();
+  $('hist-count').textContent=`${recs.length} entrée(s)`;
+  if(!recs.length){$('hist-list').innerHTML='<div class="empty-msg">Aucune journée enregistrée.</div>';return;}
+  $('hist-list').innerHTML=recs.map(r=>{
+    const cls=r.result>0?'comm':'deft', sign=r.result>0?'+':'-';
+    return`<div class="hist-item" onclick="showDetail('${r.date}')">
+      <span class="hist-date">${fmtDate(r.date)}<br><small>${dayName(r.date)}</small></span>
+      <span class="hist-gerant">${r.gerant}</span>
+      <span class="hist-amt ${cls}">${sign}${fmt(r.result)}</span>
+      <div class="hist-acts" onclick="event.stopPropagation()">
+        <button class="hbtn" onclick="askPwd('edit','${r.date}')">✏️</button>
+        <button class="hbtn del" onclick="askPwd('del','${r.date}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ---- DETAIL ----
+function showDetail(date) {
+  const r=load().find(x=>x.date===date); if(!r)return;
+  const rows=(list,title)=>`<div style="margin-bottom:10px"><div class="det-sec-title">${title}</div>${list.map(x=>`<div class="det-row"><span>${x.label}</span><span>${x.val.toLocaleString('fr-FR')} FCFA</span></div>`).join('')}</div>`;
+  $('det-title').textContent=`${fmtDate(r.date)} — ${dayName(r.date)}`;
+  $('det-body').innerHTML=`
+    ${rows(r.p1r,'PARTIE 1 — Trésorerie')}
+    <div class="det-row" style="font-weight:600"><span>Budget du jour</span><span>${r.bgt.toLocaleString('fr-FR')} FCFA</span></div>
+    <div class="det-row" style="font-weight:600;margin-bottom:10px"><span>Bons vendus</span><span>${r.bns.toLocaleString('fr-FR')} FCFA</span></div>
+    ${rows(r.p2r,'PARTIE 2 — Créances clients')}
+    ${rows(r.p3r,'PARTIE 3 — Fonds partenaires')}
+    <div style="margin-bottom:10px"><div class="det-sec-title">RÉSULTAT</div>
+      <div class="det-row"><span>P1 + P2</span><span>${r.ab.toLocaleString('fr-FR')} FCFA</span></div>
+      <div class="det-row"><span>Bons + P3 + Budget</span><span>${r.cd.toLocaleString('fr-FR')} FCFA</span></div>
+    </div>
+    <div class="det-result ${r.result>0?'comm':'deft'}">${r.result>0?'✅ Commission':' 🔴 Déficit'} : ${r.result>0?'+':'-'}${fmt(r.result)}</div>
+    <div style="text-align:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:8px">Gérant : ${r.gerant}</div>`;
+  openOverlay('mo-detail');
+}
+
+// ---- EDIT ----
+function loadForEdit(date) {
+  const recs=load(), r=recs.find(x=>x.date===date); if(!r)return;
+  save(recs.filter(x=>x.date!==date));
+  $('date-inp').value=r.date; onDate();
+  const fill=(id,rows)=>{ const c=$(id); c.innerHTML=''; rows.forEach(x=>{ const d=mkRow(x.label); d.querySelector('input').value=x.val; c.appendChild(d); }); };
+  fill('rp1',r.p1r); fill('rp2',r.p2r); fill('rp3',r.p3r);
+  $('budget-inp').value=r.bgt; $('bons-inp').value=r.bns; $('gerant-inp').value=r.gerant;
+  unlock(); calc(); renderHist(); renderAnalyse();
+  // switch to saisie tab
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  $('tab-saisie').classList.add('on');
+  document.querySelectorAll('.tab')[0].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  toast('✏️ Données chargées — modifiez puis réenregistrez.');
+}
+
+function doDelete(date) {
+  save(load().filter(r=>r.date!==date));
+  renderHist(); renderAnalyse();
+  toast('🗑️ Journée supprimée.');
+}
+
+// ---- ANALYSE ----
+function renderAnalyse() {
+  const recs=load();
+  const body=$('analyse-body'), cc=$('chart-card');
+  if(!recs.length){ body.innerHTML='<div class="empty-msg">Aucune donnée disponible.</div>'; cc.style.display='none'; return; }
+  const comms=recs.filter(r=>r.result>0), defs=recs.filter(r=>r.result<0);
+  const total=comms.reduce((s,r)=>s+r.result,0), avg=comms.length?Math.round(total/comms.length):0;
+  const best=comms.length?comms.reduce((a,b)=>a.result>b.result?a:b):null;
+  body.innerHTML=`<div class="stat-grid">
+    <div class="stat-box green"><div class="stat-val">${comms.length}</div><div class="stat-lbl">Jours avec commission</div></div>
+    <div class="stat-box red"><div class="stat-val">${defs.length}</div><div class="stat-lbl">Jours en déficit</div></div>
+    <div class="stat-box gold"><div class="stat-val">${total.toLocaleString('fr-FR')}</div><div class="stat-lbl">Total commissions (FCFA)</div></div>
+    <div class="stat-box"><div class="stat-val">${avg.toLocaleString('fr-FR')}</div><div class="stat-lbl">Moyenne / jour (FCFA)</div></div>
+  </div>${best?`<div style="padding:0 13px 13px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">🏆 Meilleure journée : <strong style="color:var(--green)">${fmtDate(best.date)}</strong> — +${best.result.toLocaleString('fr-FR')} FCFA</div>`:''}`;
+  cc.style.display='block';
+  drawChart(recs.slice(0,14).reverse());
+}
+
+function drawChart(recs) {
+  const canvas=$('chart'), ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1, W=canvas.offsetWidth||300, H=180;
+  canvas.width=W*dpr; canvas.height=H*dpr; canvas.style.height=H+'px'; ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  if(!recs.length)return;
+  const pd={t:14,r:14,b:30,l:14}, cw=W-pd.l-pd.r, ch=H-pd.t-pd.b;
+  const vals=recs.map(r=>r.result), mx=Math.max(...vals.map(Math.abs),1);
+  const step=cw/recs.length, bw=Math.max(6,step-5);
+  recs.forEach((r,i)=>{
+    const x=pd.l+i*step+step/2, bh=Math.max(2,(Math.abs(r.result)/mx)*(ch*.85));
+    ctx.fillStyle=r.result>=0?'#2d6a4f':'#9b2335'; ctx.globalAlpha=.8;
+    ctx.beginPath(); ctx.roundRect(x-bw/2, pd.t+ch-bh, bw, bh, 3); ctx.fill();
+    ctx.globalAlpha=1; ctx.fillStyle='#9a9188'; ctx.font=`9px 'DM Mono',monospace`; ctx.textAlign='center';
+    const d=new Date(r.date+'T00:00:00');
+    ctx.fillText(`${pad(d.getDate())}/${pad(d.getMonth()+1)}`, x, H-pd.b+12);
+  });
+  ctx.strokeStyle='#d9d2c5'; ctx.lineWidth=1; ctx.beginPath();
+  ctx.moveTo(pd.l,pd.t+ch); ctx.lineTo(W-pd.r,pd.t+ch); ctx.stroke();
+}
+
+// ---- PASSWORD ----
+function askPwd(type, date='') {
+  pwdAction={type,date};
+  $('pwd-inp').value=''; $('pwd-err').style.display='none';
+  openOverlay('mo-pwd');
+  setTimeout(()=>$('pwd-inp').focus(),200);
+}
+
+function confirmPwd() {
+  if($('pwd-inp').value===PWD) {
+    closeOverlay('mo-pwd');
+    if(pwdAction.type==='unlock') unlock();
+    else if(pwdAction.type==='edit') { closeOverlay('mo-detail'); loadForEdit(pwdAction.date); }
+    else if(pwdAction.type==='del') { closeOverlay('mo-detail'); doDelete(pwdAction.date); }
+  } else {
+    $('pwd-err').style.display='block'; $('pwd-inp').value='';
+  }
+}
+
+// ---- OVERLAYS ----
+function openOverlay(id) { $(id).classList.add('on'); }
+function closeOverlay(id) { $(id).classList.remove('on'); }
+
+// ---- EXPORT (rapport texte téléchargeable) ----
+function doExport() {
+  const date=$('date-inp').value||todayStr(), gerant=$('gerant-inp').value||'—';
+  const p1r=collectSec('rp1'),p2r=collectSec('rp2'),p3r=collectSec('rp3');
+  const bgt=parseFloat($('budget-inp').value)||0,bns=parseFloat($('bons-inp').value)||0;
+  const p1=p1r.reduce((s,r)=>s+r.val,0),p2=p2r.reduce((s,r)=>s+r.val,0),p3=p3r.reduce((s,r)=>s+r.val,0);
+  const ab=p1+p2,cd=bns+p3+bgt,res=ab-cd;
+  const lines=[
+    '================================================',
+    '           ETS KPENIATCHE',
+    '    FICHE JOURNALIÈRE DE SUIVI BUDGET',
+    '================================================',
+    `Date    : ${fmtDate(date)} — ${dayName(date)}`,
+    `Gérant  : ${gerant}`,
+    '',
+    '--- PARTIE 1 — Trésorerie ---',
+    ...p1r.map(r=>`  ${r.label.padEnd(24)}: ${r.val.toLocaleString('fr-FR')} FCFA`),
+    `  ${'Budget du jour'.padEnd(24)}: ${bgt.toLocaleString('fr-FR')} FCFA`,
+    `  ${'Bons vendus'.padEnd(24)}: ${bns.toLocaleString('fr-FR')} FCFA`,
+    `  TOTAL P1                   : ${p1.toLocaleString('fr-FR')} FCFA`,
+    '',
+    '--- PARTIE 2 — Créances clients ---',
+    ...p2r.map(r=>`  ${r.label.padEnd(24)}: ${r.val.toLocaleString('fr-FR')} FCFA`),
+    `  TOTAL P2                   : ${p2.toLocaleString('fr-FR')} FCFA`,
+    '',
+    '--- PARTIE 3 — Fonds partenaires ---',
+    ...p3r.map(r=>`  ${r.label.padEnd(24)}: ${r.val.toLocaleString('fr-FR')} FCFA`),
+    `  TOTAL P3                   : ${p3.toLocaleString('fr-FR')} FCFA`,
+    '',
+    '================================================',
+    `  P1 + P2                    : ${ab.toLocaleString('fr-FR')} FCFA`,
+    `  Bons + P3 + Budget         : ${cd.toLocaleString('fr-FR')} FCFA`,
+    '',
+    `  ${res>0?'✅ COMMISSION DU JOUR':'🔴 DÉFICIT'} : ${res>0?'+':'-'}${fmt(res)}`,
+    '================================================',
+    '',
+    `  Signature du Gérant : ${gerant}`,
+    '',
+    '================================================',
+  ];
+  dl(lines.join('\n'), `ETS_KPENIATCHE_${date}.txt`, 'text/plain');
+  toast('📄 Rapport exporté !');
+}
+
+// ---- BACKUP / RESTORE ----
+function doBackup() {
+  const recs=load();
+  if(!recs.length){toast('⚠️ Aucune donnée à sauvegarder.');return;}
+  dl(JSON.stringify(recs,null,2), `KPEN_backup_${todayStr()}.json`, 'application/json');
+  toast('💾 Backup téléchargé !');
+}
+
+function doRestore(input) {
+  const file=input.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!Array.isArray(data))throw new Error();
+      if(!confirm(`Restaurer ${data.length} journée(s) ? Cela remplacera les données actuelles.`)){input.value='';return;}
+      save(data); renderHist(); renderAnalyse();
+      toast(`✅ ${data.length} journée(s) restaurée(s) !`);
+    }catch(err){ toast('❌ Fichier backup invalide.'); }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+function dl(content, filename, type) {
+  const blob=new Blob([content],{type}), url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ---- TOAST ----
+function toast(msg) {
+  const t=$('toast'); t.textContent=msg; t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),3000);
+}
+</script>
+</body>
+</html>
